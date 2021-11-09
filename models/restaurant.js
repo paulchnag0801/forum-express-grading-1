@@ -13,15 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Restaurant.init({
-    name: DataTypes.STRING,
-    tel: DataTypes.STRING,
-    address: DataTypes.STRING,
-    opening_hours: DataTypes.STRING,
-    description: DataTypes.TEXT
-  }, {
-    sequelize,
-    modelName: 'Restaurant',
-  });
+  Restaurant.init(
+    {
+      name: DataTypes.STRING,
+      tel: DataTypes.STRING,
+      address: DataTypes.STRING,
+      opening_hours: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      image: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: 'Restaurant',
+    }
+  )
   return Restaurant;
 };
