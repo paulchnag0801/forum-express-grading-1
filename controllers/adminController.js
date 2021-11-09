@@ -7,6 +7,9 @@ const adminController = {
       return res.render('admin/restaurants', { restaurants: restaurants })
     })
   },
+  createRestaurant: (req, res) => {
+    return res.render('admin/create')
+  },
 }
 
 module.exports = adminController
