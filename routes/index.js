@@ -38,7 +38,7 @@ module.exports = (app, passport) => {
     authenticatedAdmin,
     adminController.getRestaurants
   )
-  
+
   app.get(
     '/admin/restaurants/create',
     authenticatedAdmin,
@@ -87,6 +87,12 @@ module.exports = (app, passport) => {
       failureFlash: true,
     }),
     userController.signIn
+  )
+  app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+  app.put(
+    '/admin/users/:id/toggleAdmin',
+    authenticatedAdmin,
+    adminController.toggleAdmin
   )
   app.get('/logout', userController.logout)
 }

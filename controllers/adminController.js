@@ -1,7 +1,7 @@
 const fs = require('fs')
 const db = require('../models')
 const Restaurant = db.Restaurant
-
+const User = db.User
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
@@ -123,6 +123,32 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
     })
+  },
+  getUsers: (req, res) => {
+    return User.findAll({ raw: true })
+      .then((users) => {
+        return res.render('admin/users', { users })
+      })
+      .catch((err) => console.log(err))
+  },
+  toggleAdmin: (req, res) => {
+    return User.findByPk(req.params.id)
+      .then((user) => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更管理者權限')
+          return res.redirect('back')
+        }
+        user.isAdmin === false ? (user.isAdmin = true) : (user.isAdmin = false)
+        return user
+          .update({
+            isAdmin: user.isAdmin,
+          })
+          .then((user) => {
+            req.flash('success_messages', '使用者權限變更成功')
+            res.redirect('/admin/users')
+          })
+      })
+      .catch((err) => console.console.log(err))
   },
 }
 

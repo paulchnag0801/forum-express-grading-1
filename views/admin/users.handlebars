@@ -1,0 +1,36 @@
+<h1>使用者清單</h1>
+
+<a href='/admin/restaurants'>
+  <button type="button" class="btn btn-outline-info"> 顯示餐廳清單</button>
+</a>
+
+<br />
+<br />
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">狀態</th>
+      <th scope="col">切換使用者</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      {{!-- 管理員與使用者條件切換 --}}
+      <td>{{#if this.isAdmin}} admin {{else}} user {{/if}} </td>
+      <td>
+        <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">set as {{#if this.isAdmin}} user {{else}} admin {{/if}} </button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
