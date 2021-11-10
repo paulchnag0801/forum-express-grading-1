@@ -1,3 +1,5 @@
+const helpers = require('../_helpers')
+
 const restController = require('../controllers/restController.js')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
@@ -7,14 +9,19 @@ const upload = multer({ dest: 'temp/' })
 
 module.exports = (app, passport) => {
   const authenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    // if(req.isAuthenticated)
+    if (helpers.ensureAuthenticated(req)) {
+      if (helpers.getUser(req).isAdmin) {
+        return next()
+      }
       return next()
     }
     res.redirect('/signin')
   }
   const authenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      if (req.user.isAdmin) {
+    // if(req.isAuthenticated)
+    if (helpers.ensureAuthenticated(req)) {
+      if (helpers.getUser(req).isAdmin) {
         return next()
       }
       return res.redirect('/')
@@ -33,12 +40,13 @@ module.exports = (app, passport) => {
   )
 
   // 在 /admin/restaurants 底下則交給 adminController.getRestaurants 處理
+  //READ-all
   app.get(
     '/admin/restaurants',
     authenticatedAdmin,
     adminController.getRestaurants
   )
-
+  //CREATE
   app.get(
     '/admin/restaurants/create',
     authenticatedAdmin,
@@ -51,13 +59,13 @@ module.exports = (app, passport) => {
     upload.single('image'),
     adminController.postRestaurant
   )
-
+  //READ-one
   app.get(
     '/admin/restaurants/:id',
     authenticatedAdmin,
     adminController.getRestaurant
   )
-
+  //UPDATE
   app.get(
     '/admin/restaurants/:id/edit',
     authenticatedAdmin,
@@ -70,13 +78,13 @@ module.exports = (app, passport) => {
     upload.single('image'),
     adminController.putRestaurant
   )
-
+  //DELETE
   app.delete(
     '/admin/restaurants/:id',
     authenticatedAdmin,
     adminController.deleteRestaurant
   )
-
+  //登入＆登出＆註冊頁面路由
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   app.get('/signin', userController.signInPage)
@@ -88,11 +96,13 @@ module.exports = (app, passport) => {
     }),
     userController.signIn
   )
+  app.get('/logout', userController.logout)
+
+  // 管理者和使用者管理
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
   app.put(
     '/admin/users/:id/toggleAdmin',
     authenticatedAdmin,
     adminController.toggleAdmin
   )
-  app.get('/logout', userController.logout)
 }
