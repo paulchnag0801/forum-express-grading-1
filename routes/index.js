@@ -115,4 +115,11 @@ module.exports = (app, passport) => {
     authenticatedAdmin,
     categoryController.getCategories
   )
+
+  // 後台分類的 Create
+  app.post(
+    '/admin/categories',
+    authenticatedAdmin,
+    categoryController.postCategory
+  )
 }
