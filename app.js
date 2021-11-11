@@ -15,7 +15,10 @@ const app = express()
 const port = process.env.PORT || 3000
 
 // 設定 view engine 使用 handlebars
-app.engine('handlebars', handlebars())
+app.engine(
+  'handlebars',
+  handlebars({ helpers: require('./config/handlebars-helpers') })
+)
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
 
