@@ -3,6 +3,7 @@ const helpers = require('../_helpers')
 const restController = require('../controllers/restController.js')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
+const categoryController = require('../controllers/categoryController.js')
 
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
@@ -98,11 +99,20 @@ module.exports = (app, passport) => {
   )
   app.get('/logout', userController.logout)
 
-  // 管理者和使用者管理
+  // 管理者和使用者管理的切換路由
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
   app.put(
     '/admin/users/:id/toggleAdmin',
     authenticatedAdmin,
     adminController.toggleAdmin
+  )
+
+  //後台分類的CRUD
+
+  // 後台分類的 Read
+  app.get(
+    '/admin/categories',
+    authenticatedAdmin,
+    categoryController.getCategories
   )
 }
