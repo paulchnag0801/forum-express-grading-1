@@ -129,10 +129,17 @@ module.exports = (app, passport) => {
     authenticatedAdmin,
     categoryController.getCategories
   )
-  
+
   app.put(
     '/admin/categories/:id',
     authenticatedAdmin,
     categoryController.putCategory
+  )
+
+  //後來分類的 Delete
+  app.delete(
+    '/admin/categories/:id',
+    authenticatedAdmin,
+    categoryController.deleteCategory
   )
 }
