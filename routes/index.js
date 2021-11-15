@@ -42,6 +42,13 @@ module.exports = (app, passport) => {
   //新增評論路由
   app.post('/comments', authenticated, commentController.postComment)
 
+  //刪除評論路由
+  app.delete(
+    '/comments/:id',
+    authenticatedAdmin,
+    commentController.deleteComment
+  )
+
   // 連到 /admin 頁面就轉到 /admin/restaurants
   app.get('/admin', authenticatedAdmin, (req, res) =>
     res.redirect('/admin/restaurants')
