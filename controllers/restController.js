@@ -1,6 +1,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const Comment = db.Comment
+const User = db.User
 const pageLimit = 10 //指定一頁有 10 筆資料，將變數宣告在最上方，避免「magic number」
 
 
@@ -60,8 +62,9 @@ const restController = {
   //顯示單一頁面
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: [Category, { model: Comment, include: [User] }],
     }).then((restaurant) => {
+      // console.log(restaurant.Comments[0].dataValues)
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
       })
