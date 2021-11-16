@@ -156,4 +156,14 @@ module.exports = (app, passport) => {
     authenticatedAdmin,
     categoryController.deleteCategory
   )
+
+  //個人資訊
+  app.get('/users/:id', authenticated, userController.getUser)
+  app.get('/users/:id/edit', authenticated, userController.editUser)
+  app.put(
+    '/users/:id',
+    authenticated,
+    upload.single('image'),
+    userController.putUser
+  )
 }

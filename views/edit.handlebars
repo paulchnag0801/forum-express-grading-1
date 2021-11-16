@@ -1,0 +1,18 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="請輸入要修改的名稱" value="{{user.name}}"required>
+  </div>
+  
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" name="email" id="email" placeholder="請輸入要修改的電子信箱" value="{{user.email}}" required>
+  </div>
+
+  <div class="form-group">
+    <label for="image">Image</label>
+    <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
