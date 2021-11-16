@@ -26,7 +26,7 @@
 {{!-- 查看評論html --}}
 <h3>所有評論：</h3>
 {{#each restaurant.Comments}}
-  {{#if ../user.isAdmin}}
+  {{#if ../loginUser.isAdmin}}
   <form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="float: right;">
     <button type="submit" class="btn btn-danger">Delete</button>
   </form>
