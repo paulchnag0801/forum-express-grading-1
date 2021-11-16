@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { Op } = require('sequelize') //載入sequelize Operators
 const User = db.User
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 const helpers = require('../_helpers')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -55,9 +57,20 @@ const userController = {
   },
   //取得個人Profile
   getUser: (req, res) => {
-    return User.findByPk(req.params.id).then((user) =>
-      res.render('profile', { user: user.toJSON() })
-    )
+    const userId = req.params.id
+    return Comment.findAll({
+      raw: true,
+      nest: true,
+      where: { userId: userId },
+      include: [Restaurant],
+    })
+      .then((comments) => {
+        return User.findByPk(userId).then((user) => {
+          // user.comments ? (user.commentCount = user.comments.length) : ''
+          res.render('profile', { user: user.toJSON(), comments })
+        })
+      })
+      .catch((err) => console.log(err))
   },
   editUser: (req, res) => {
     //只有自己能編輯自己的資料

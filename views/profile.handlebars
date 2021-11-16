@@ -5,6 +5,7 @@
       <div class="mt-4 ml-2">
         <h2>{{user.name}}</h2>
         <p>{{user.email}}</p>
+        {{!-- <p><b>{{user.commentCount}}</b>已評論餐廳</p> --}}
         {{!-- 透過hbs.helper去判斷是否為當下使用者id，如果不是將不會寫是edit --}}
         {{!-- 避免透過網址修改id，任意修改他人的profile --}}
         {{#ifCond user.id loginUser.id}}
@@ -12,4 +13,18 @@
         {{/ifCond}}
       </div>
     </div>
-  </div
+    <br>
+    <br>
+    <div class="card">
+      <div class="card-header">
+        {{this.user.name}} 已評論的餐廳
+      </div>
+      <div class="card-body">
+          {{#each comments}}
+          <a href="/restaurants/{{this.Restaurant.id}}" style="display: inline-block;">
+            <img class="img mr-3" src="{{this.Restaurant.image}}" style="width: 100px; height:100px">
+          </a>
+          {{/each}}
+      </div>
+    </div>
+  </div>
