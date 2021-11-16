@@ -58,17 +58,18 @@ const userController = {
   //取得個人Profile
   getUser: (req, res) => {
     const userId = req.params.id
-    return Comment.findAll({
-      raw: true,
-      nest: true,
-      where: { userId: userId },
-      include: [Restaurant],
+    return User.findByPk(userId, {
+      include: [
+        {
+          model: Comment,
+          include: { model: Restaurant, attributes: ['id', 'image'] },
+        },
+      ],
     })
-      .then((comments) => {
-        return User.findByPk(userId).then((user) => {
-          // user.comments ? (user.commentCount = user.comments.length) : ''
-          res.render('profile', { user: user.toJSON(), comments })
-        })
+      .then((user) => {
+        user = user.toJSON()
+        user.Comments ? (user.commentCount = user.Comments.length) : ''
+        return res.render('profile', { user: user })
       })
       .catch((err) => console.log(err))
   },
