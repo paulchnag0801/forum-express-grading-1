@@ -72,24 +72,25 @@ const restController = {
   },
   //最新動態
   getFeeds: (req, res) => {
-    return Restaurant.findAll({
-      limit: 10,
-      raw: true,
-      nest: true,
-      order: [['createdAt', 'DESC']],
-      include: [Category],
-    }).then((restaurants) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+      }),
       Comment.findAll({
         limit: 10,
         raw: true,
         nest: true,
         order: [['createdAt', 'DESC']],
         include: [User, Restaurant],
-      }).then((comments) => {
-        return res.render('feeds', {
-          restaurants: restaurants,
-          comments: comments,
-        })
+      }),
+    ]).then(([restaurants, comments]) => {
+      return res.render('feeds', {
+        restaurants: restaurants,
+        comments: comments,
       })
     })
   },
