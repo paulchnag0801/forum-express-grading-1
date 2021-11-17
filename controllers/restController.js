@@ -64,11 +64,18 @@ const restController = {
   //顯示單一頁面
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: [User] }],
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' }, // 把有收藏這間餐廳的使用者拿近來
+        { model: Comment, include: [User] },
+      ],
     }).then((restaurant) => {
-      restaurant.increment('viewCounts')
+      const isFavorited = restaurant.FavoritedUsers.map((d) => d.id).includes(
+        req.user.id
+      ) // 找出收藏此餐廳的 user
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
+        isFavorited: isFavorited, // 將資料傳到前端
       })
     })
   },
