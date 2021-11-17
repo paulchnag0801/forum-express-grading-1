@@ -41,6 +41,13 @@ module.exports = (app, passport) => {
   //顯示單一餐廳路由
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
+  //瀏覽單一餐廳資訊平台路由
+  app.get(
+    '/restaurants/:id/dashboard',
+    authenticated,
+    restController.getDashboard
+  )
+  
   //新增評論路由
   app.post('/comments', authenticated, commentController.postComment)
 
