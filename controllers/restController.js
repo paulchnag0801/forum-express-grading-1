@@ -5,7 +5,6 @@ const Comment = db.Comment
 const User = db.User
 const pageLimit = 10 //指定一頁有 10 筆資料，將變數宣告在最上方，避免「magic number」
 
-
 const restController = {
   //顯示所有餐廳頁面
   getRestaurants: (req, res) => {
@@ -64,7 +63,7 @@ const restController = {
     return Restaurant.findByPk(req.params.id, {
       include: [Category, { model: Comment, include: [User] }],
     }).then((restaurant) => {
-      // console.log(restaurant.Comments[0].dataValues)
+      restaurant.increment('viewCounts')
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
       })
@@ -95,7 +94,7 @@ const restController = {
     })
   },
   //瀏覽餐廳資訊平台
-  getDashboard: (req, res) => {
+  getDashBoard: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category, { model: Comment, include: [User] }],
     }).then((restaurant) => {

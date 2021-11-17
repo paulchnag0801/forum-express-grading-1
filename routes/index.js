@@ -45,7 +45,7 @@ module.exports = (app, passport) => {
   app.get(
     '/restaurants/:id/dashboard',
     authenticated,
-    restController.getDashboard
+    restController.getDashBoard
   )
   
   //新增評論路由
