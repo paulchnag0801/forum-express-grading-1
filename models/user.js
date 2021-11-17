@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'UserId', //找到使用者的id
         as: 'FavoritedRestaurants', //新增一個別名，將找到的餐廳放進去，同樣的透過類似 user.FavoritedRestaurants 這樣的方法來呼叫出和 user 實例有收藏關係的所有餐廳。
       })
+      User.belongsToMany(models.Restaurant, {
+        through: models.Like,
+        foreignKey: 'UserId',
+        as: 'LikedRestaurants',
+      })
     }
   }
   User.init(

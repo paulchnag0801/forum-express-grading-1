@@ -17,14 +17,26 @@
   </div>
   <div class="col-md-8">
     <p>{{restaurant.description}}</p>
-    <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-        {{#if isFavorited }}
-        <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;"><button type="submit"
-            class="btn btn-danger">移除最愛</button></form>
-        {{else}}
-        <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;"><button type="submit"
-            class="btn btn-primary">加到最愛</button></form>
-        {{/if}}
+   
+    <div class="d-flex ">
+      <a href="/restaurants/{{restaurant.id}}/dashboard">
+        <button type="submit" class="btn btn-primary mr-2 ">Dashboard</button>
+      </a>
+      {{#if this.isFavorited}}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST"><button type="submit"
+          class="btn btn-danger mr-2">移除最愛</button></form>
+      {{else}}
+      <form action="/favorite/{{restaurant.id}}?_method=POST" method="POST"><button type="submit"
+          class="btn btn-primary mr-2">加到最愛</button></form>
+      {{/if}}
+      {{#if this.isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST"><button type="submit"
+          class="btn btn-danger">Unlike</button></form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST"><button type="submit" class="btn btn-primary">Like</button>
+      </form>
+      {{/if}}
+    </div>
   </div>
   <hr>
 </div>
@@ -34,11 +46,11 @@
 {{!-- 查看評論html --}}
 <h3>所有評論：</h3>
 {{#each restaurant.Comments}}
-  {{#if ../loginUser.isAdmin}}
-  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="float: right;">
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
-  {{/if}}
+{{#if ../loginUser.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="float: right;">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>
