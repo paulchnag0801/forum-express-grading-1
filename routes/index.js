@@ -47,7 +47,7 @@ module.exports = (app, passport) => {
     authenticated,
     restController.getDashBoard
   )
-  
+
   //新增評論路由
   app.post('/comments', authenticated, commentController.postComment)
 
@@ -174,5 +174,16 @@ module.exports = (app, passport) => {
     authenticated,
     upload.single('image'),
     userController.putUser
+  )
+
+  //收藏功能路由
+  //加入收藏
+  app.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+
+  //移除收藏
+  app.delete(
+    '/favorite/:restaurantId',
+    authenticated,
+    userController.removeFavorite
   )
 }
