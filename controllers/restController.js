@@ -74,6 +74,7 @@ const restController = {
         { model: Comment, include: [User] },
       ],
     }).then((restaurant) => {
+      restaurant.increment('viewCounts')
       const isFavorited = restaurant.FavoritedUsers.map((d) => d.id).includes(
         req.user.id
       ) // 找出收藏此餐廳的 user
