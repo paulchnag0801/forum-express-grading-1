@@ -35,6 +35,7 @@ module.exports = (app, passport) => {
 
   //在 /restaurants 底下則交給 restController.getRestaurants 來處理
   app.get('/restaurants', authenticated, restController.getRestaurants)
+
   //顯示最新動態
   app.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
@@ -166,6 +167,9 @@ module.exports = (app, passport) => {
     categoryController.deleteCategory
   )
 
+  //追蹤 ＆ 被追蹤 TOP10
+  app.get('/users/top', authenticated, userController.getTopUser)
+
   //個人資訊
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.editUser)
@@ -190,7 +194,6 @@ module.exports = (app, passport) => {
   //Like & Unlike
   //Like
   app.post('/like/:restaurantId', authenticated, userController.addLike)
-  
-  app.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+  app.delete('/like/:restaurantId', authenticated, userController.removeLike)
 }
