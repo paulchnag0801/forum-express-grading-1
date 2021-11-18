@@ -9,6 +9,7 @@ const Like = db.Like
 const Followship = db.Followship
 const helpers = require('../_helpers')
 const imgur = require('imgur-node-api')
+const restaurant = require('../models/restaurant')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
@@ -134,7 +135,10 @@ const userController = {
     return Favorite.create({
       UserId: req.user.id,
       RestaurantId: req.params.restaurantId,
-    }).then((restaurant) => {
+    }).then((favorite) => {
+      Restaurant.findByPk(req.params.restaurantId).then((restaurant) => {
+        restaurant.increment('favoriteCounts')
+      })
       return res.redirect('back')
     })
   },
@@ -145,8 +149,11 @@ const userController = {
         UserId: req.user.id,
         RestaurantId: req.params.restaurantId,
       },
-    }).then((favorite) => {    
-        return res.redirect('back')
+    }).then((favorite) => {
+      Restaurant.findByPk(req.params.restaurantId).then((restaurant) => {
+        restaurant.decrement('favoriteCounts')
+      })
+      return res.redirect('back')
     })
   },
   //Like & Unlike
