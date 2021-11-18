@@ -6,6 +6,7 @@ const Comment = db.Comment
 const Favorite = db.Favorite
 const Restaurant = db.Restaurant
 const Like = db.Like
+const Followship = db.Followship
 const helpers = require('../_helpers')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -171,7 +172,7 @@ const userController = {
     })
   },
 
-  //追蹤 ＆ 被追蹤 TOP10
+  //追蹤 ＆ 被追蹤 TOP
   getTopUser: (req, res) => {
     // 撈出所有 User 與 followers 資料
     return User.findAll({
@@ -188,6 +189,28 @@ const userController = {
       // 依追蹤者人數排序清單
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
       return res.render('topUser', { users: users })
+    })
+  },
+  //新增追蹤
+  addFollowing: (req, res) => {
+    return Followship.create({
+      followerId: req.user.id,
+      followingId: req.params.userId,
+    }).then((followship) => {
+      return res.redirect('back')
+    })
+  },
+  //移除追蹤
+  removeFollowing: (req, res) => {
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId,
+      },
+    }).then((followship) => {
+      followship.destroy().then((followship) => {
+        return res.redirect('back')
+      })
     })
   },
 }

@@ -167,7 +167,7 @@ module.exports = (app, passport) => {
     categoryController.deleteCategory
   )
 
-  //追蹤 ＆ 被追蹤 TOP10
+  //追蹤 ＆ 被追蹤 TOP
   app.get('/users/top', authenticated, userController.getTopUser)
 
   //個人資訊
@@ -195,5 +195,15 @@ module.exports = (app, passport) => {
   //Like
   app.post('/like/:restaurantId', authenticated, userController.addLike)
 
+  //Unlike
   app.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
+  //follower & UnFollower
+  app.post('/following/:userId', authenticated, userController.addFollowing)
+
+  app.delete(
+    '/following/:userId',
+    authenticated,
+    userController.removeFollowing
+  )
 }
