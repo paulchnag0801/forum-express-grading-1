@@ -140,15 +140,13 @@ const userController = {
   },
 
   removeFavorite: (req, res) => {
-    return Favorite.findOne({
+    return Favorite.destroy({
       where: {
         UserId: req.user.id,
         RestaurantId: req.params.restaurantId,
       },
-    }).then((favorite) => {
-      favorite.destroy().then((restaurant) => {
+    }).then((favorite) => {    
         return res.redirect('back')
-      })
     })
   },
   //Like & Unlike

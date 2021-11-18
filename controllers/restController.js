@@ -2,6 +2,7 @@ const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
+const helpers = require('../_helpers')
 const User = db.User
 const pageLimit = 10 //指定一頁有 10 筆資料，將變數宣告在最上方，避免「magic number」
 
@@ -44,9 +45,7 @@ const restController = {
         isFavorited: req.user.FavoritedRestaurants.map((d) => d.id).includes(
           r.id
         ),
-        isLiked: req.user.LikedRestaurants.map((d) => d.id).includes(
-          r.id
-        ),
+        isLiked: req.user.LikedRestaurants.map((d) => d.id).includes(r.id),
       }))
       Category.findAll({
         raw: true,
@@ -118,6 +117,26 @@ const restController = {
       include: [Category, { model: Comment, include: [User] }],
     }).then((restaurant) => {
       return res.render('dashboard', { restaurant: restaurant.toJSON() })
+    })
+  },
+  //TOP10 Restaurants
+  getTopRestaurant: (req, res) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }],
+    }).then((restaurants) => {
+      restaurants = restaurants.map((r) => ({
+        ...r.dataValues,
+        description: r.description.substring(0, 50),
+        favoritedCount: r.FavoritedUsers.length,
+        isFavorite: helpers
+          .getUser(req)
+          .FavoritedRestaurants.map((d) => d.id)
+          .includes(r.id),
+      }))
+      restaurants = restaurants
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, 10)
+      return res.render('topRestaurant', { restaurants })
     })
   },
 }
