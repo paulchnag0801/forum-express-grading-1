@@ -42,6 +42,18 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          id: 4,
+          email: 'x1232178987@gmail.com',
+          password: bcrypt.hashSync('1', bcrypt.genSaltSync(10), null),
+          isAdmin: true,
+          name: 'PAUL',
+          image: `https://loremflickr.com/320/320/?random=${
+            Math.random() * 100
+          }`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     )
