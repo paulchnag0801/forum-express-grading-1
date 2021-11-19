@@ -12,6 +12,20 @@ const imgur = require('imgur-node-api')
 const restaurant = require('../models/restaurant')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
+// 設定避免拿到使用者評論重複的餐廳
+const removeRepeatComment = (resComments) => {
+  const comments = []
+  for (let resComment of resComments) {
+    const check = comments.find(
+      (comment) => comment.RestaurantId === resComment.RestaurantId
+    )
+    if (!check) {
+      comments.push(resComment)
+    }
+  }
+  return comments
+}
+
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -68,11 +82,16 @@ const userController = {
           model: Comment,
           include: { model: Restaurant, attributes: ['id', 'image'] },
         },
+        { model: User, as: 'Followings' },
+        { model: User, as: 'Followers' },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
       ],
     })
       .then((user) => {
         user = user.toJSON()
-        user.Comments ? (user.commentCount = user.Comments.length) : ''
+        user.Comments
+          ? (user.Comments = removeRepeatComment(user.Comments))
+          : ''
         return res.render('profile', { user: user })
       })
       .catch((err) => console.log(err))
@@ -89,46 +108,54 @@ const userController = {
     )
   },
   putUser: (req, res) => {
+    
+    //只有自己能編輯自己的資料
+    //防止使用網址修改id切換使用者去修改別人的Profile
+    if (helpers.getUser(req).id !== Number(req.params.id)) {
+      req.flash('error_messages', '無法變更其他使用者的Profile')
+      res.redirect(`/users/${helpers.getUser(req).id}`)
+    }
+
     User.findOne({
       where: { email: req.body.email, [Op.not]: { id: req.params.id } },
     }).then((emailCheck) => {
-      if (emailCheck) {
+      if (JSON.stringify(emailCheck) !== '{}') {
         req.flash('error_messages', '此email已註冊過')
         res.redirect('back')
+      } else {
+        const { file } = req
+        if (file) {
+          imgur.setClientID(IMGUR_CLIENT_ID)
+          imgur.upload(file.path, (err, img) => {
+            return User.findByPk(req.params.id).then((user) => {
+              user
+                .update({
+                  name: req.body.name,
+                  email: req.body.email,
+                  image: file ? img.data.link : null,
+                })
+                .then(() => {
+                  req.flash('success_messages', '使用者資料編輯成功')
+                  return res.redirect(`/users/${req.params.id}`)
+                })
+            })
+          })
+        } else {
+          return User.findByPk(req.params.id).then((user) => {
+            user
+              .update({
+                name: req.body.name,
+                email: req.body.email,
+                image: user.image,
+              })
+              .then(() => {
+                req.flash('success_messages', '使用者資料編輯成功')
+                return res.redirect(`/users/${req.params.id}`)
+              })
+          })
+        }
       }
     })
-
-    const { file } = req
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (err, img) => {
-        return User.findByPk(req.params.id).then((user) => {
-          user
-            .update({
-              name: req.body.name,
-              email: req.body.email,
-              image: file ? img.data.link : null,
-            })
-            .then(() => {
-              req.flash('success_messages', '使用者資料編輯成功')
-              return res.redirect(`/users/${req.params.id}`)
-            })
-        })
-      })
-    } else {
-      return User.findByPk(req.params.id).then((user) => {
-        user
-          .update({
-            name: req.body.name,
-            email: req.body.email,
-            image: user.image,
-          })
-          .then(() => {
-            req.flash('success_messages', '使用者資料編輯成功')
-            return res.redirect(`/users/${req.params.id}`)
-          })
-      })
-    }
   },
   //收藏功能
   addFavorite: (req, res) => {
