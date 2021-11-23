@@ -16,7 +16,8 @@
 
 <ul class="nav nav-pills">
   <li class="nav-item">
-    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a> 
+    {{!-- 如果 categoryId等於 空字串，代表就是要顯示全部，請active全部--}}
   </li>
   {{#each categories}}
   <li class="nav-item">
