@@ -5,14 +5,29 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 
 const adminService = {
-  getRestaurants: (req, res, callback) => {
-    return Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category],
-    }).then((restaurants) => {
+  getRestaurants: async (req, res, callback) => {
+    try {
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category],
+      })
       callback({ restaurants: restaurants })
-    })
+    } catch (erro) {
+      console.log(erro)
+    }
+  },
+  getRestaurant: async (req, res, callback) => {
+    try {
+      const restaurant = (
+        await Restaurant.findByPk(req.params.id, {
+          include: [Category],
+        })
+      ).toJSON()
+      callback({ restaurant: restaurant })
+    } catch (erro) {
+      console.log(erro)
+    }
   },
 }
 module.exports = adminService
