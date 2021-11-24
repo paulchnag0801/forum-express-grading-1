@@ -3,7 +3,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
-
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const adminService = {
   getRestaurants: async (req, res, callback) => {
     try {
@@ -34,6 +35,40 @@ const adminService = {
       const restaurant = await Restaurant.findByPk(req.params.id)
       await restaurant.destroy()
       callback({ status: 'success', message: '' })
+    } catch (erro) {
+      console.log(erro)
+    }
+  },
+  postRestaurant: async (req, res, callback) => {
+    try {
+      if (!req.body.name) {
+        callback({ status: 'error', message: "name didn't exist" })
+      }
+      const { file } = req
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        imgur.upload(file.path, async (err, img) => {
+          await Restaurant.create({
+            ...req.body,
+            image: file ? img.data.link : null,
+            CategoryId: req.body.categoryId,
+          })
+          callback({
+            status: 'success',
+            message: 'restaurant was successfully created',
+          })
+        })
+      } else {
+        await Restaurant.create({
+          ...req.body,
+          image: null,
+          CategoryId: req.body.categoryId,
+        })
+        callback({
+          status: 'success',
+          message: 'restaurant was successfully created',
+        })
+      }
     } catch (erro) {
       console.log(erro)
     }
