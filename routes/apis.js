@@ -108,7 +108,24 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashBo
 
 // comment routes setting
 router.post('/comments', authenticated, commentController.postComment)
-router.delete('/comments/:id', authenticated, authenticatedAdmin, commentController.deleteComment) // 只有admin可以刪留言
+router.delete('/comments/:id', authenticated, authenticatedAdmin, commentController.deleteComment) 
+
+// user routes setting
+router.get('/users/top', authenticated, userController.getTopUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+
+// favorite routes setting
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+// like routes setting
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
+// following routes setting
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 // JWT signin & signup
 router.post('/signin', userController.signIn)
