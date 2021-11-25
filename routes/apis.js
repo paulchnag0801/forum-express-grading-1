@@ -5,6 +5,7 @@ const router = express.Router()
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
 const userController = require('../controllers/api/userController.js')
+const restController = require('../controllers/api/restController')
 const passport = require('../config/passport')
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -95,6 +96,13 @@ router.delete(
   authenticatedAdmin,
   categoryController.deleteCategory
 )
+
+// restaurant routes setting
+router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurant)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashBoard)
 
 
 // JWT signin & signup
