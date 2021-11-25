@@ -18,6 +18,12 @@ router.post(
   adminController.postRestaurant
 )
 
+router.put(
+  '/admin/restaurants/:id',
+  upload.single('image'),
+  adminController.putRestaurant
+)
+
 router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
 // category routes setting
