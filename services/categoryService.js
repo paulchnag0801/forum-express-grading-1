@@ -18,7 +18,18 @@ const categoryService = {
       console.log(erro)
     }
   },
+  postCategories: async (req, res, callback) => {
+    try {
+      if (!req.body.name) {
+        callback({ status: 'error', messages: "name didn't exist" })
+      } else {
+        await Category.create({ name: req.body.name })
+        callback({ status: 'success', message: '' })
+      }
+    } catch (error) {
+      console.log(erro)
+    }
+  },
 }
-
 
 module.exports = categoryService
