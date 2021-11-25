@@ -14,8 +14,8 @@ const categoryService = {
       } else {
         callback({ categories })
       }
-    } catch (erro) {
-      console.log(erro)
+    } catch (error) {
+      console.log(error)
     }
   },
   postCategories: async (req, res, callback) => {
@@ -27,7 +27,7 @@ const categoryService = {
         callback({ status: 'success', message: '' })
       }
     } catch (error) {
-      console.log(erro)
+      console.log(error)
     }
   },
   putCategory: async (req, res, callback) => {
@@ -41,16 +41,16 @@ const categoryService = {
         )
         callback({ status: 'success', message: '' })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log(error)
     }
   },
   deleteCategory: async (req, res, callback) => {
     try {
       await Category.destroy({ where: { id: req.params.id } })
       callback({ status: 'success', message: '' })
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log(error)
     }
   },
 }

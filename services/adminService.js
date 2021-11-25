@@ -3,6 +3,7 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const User = db.User
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const adminService = {
@@ -30,19 +31,10 @@ const adminService = {
       console.log(erro)
     }
   },
-  deleteRestaurant: async (req, res, callback) => {
-    try {
-      const restaurant = await Restaurant.findByPk(req.params.id)
-      await restaurant.destroy()
-      callback({ status: 'success', message: '' })
-    } catch (erro) {
-      console.log(erro)
-    }
-  },
   postRestaurant: async (req, res, callback) => {
     try {
       if (!req.body.name) {
-        callback({ status: 'error', message: "name didn't exist" })
+        return callback({ status: 'error', message: "name didn't exist" })
       }
       const { file } = req
       if (file) {
@@ -76,7 +68,7 @@ const adminService = {
   putRestaurant: async (req, res, callback) => {
     try {
       if (!req.body.name) {
-        callback({ status: 'error', message: "name didn't exist" })
+       return callback({ status: 'error', message: "name didn't exist" })
       }
 
       const { file } = req
@@ -106,8 +98,38 @@ const adminService = {
           message: 'restaurant was successfully updated',
         })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  deleteRestaurant: async (req, res, callback) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      await restaurant.destroy()
+      callback({ status: 'success', message: '' })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getUsers: async (req, res, callback) => {
+    try {
+      const users = await User.findAll({ raw: true, nest: true })
+      callback({ users })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  toggleAdmin: async (req, res, callback) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      if (user.email === 'root@example.com') {
+        return callback({ status: 'error', message: '禁止變更管理者權限' })
+      }
+      const isAdmin = !user.isAdmin
+      await user.update({ isAdmin })
+      callback({ status: 'success', message: '使用者權限變更成功' })
+    } catch (error) {
+      console.log(error)
     }
   },
 }

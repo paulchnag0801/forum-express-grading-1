@@ -22,7 +22,7 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 
-// admin routes setting
+// admin restaurants routes setting
 router.get(
   '/admin/restaurants',
   authenticated,
@@ -59,6 +59,10 @@ router.delete(
   authenticatedAdmin,
   adminController.deleteRestaurant
 )
+
+// admin users routes setting
+router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
+router.post('/admin/users/:id', authenticated, authenticatedAdmin, adminController.toggleAdmin)
 
 // category routes setting
 router.get(
