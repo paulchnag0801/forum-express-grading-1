@@ -19,19 +19,19 @@ const categoryController = {
     })
   },
   putCategory: (req, res) => {
-   categoryService.putCategory(req, res, (data) => {
-     if (data.status === 'error') {
-       req.flash('error_messages', data.message)
-       return res.redirect('back')
-     }
-     return res.redirect('/admin/categories')
-   })
+    categoryService.putCategory(req, res, (data) => {
+      if (data.status === 'error') {
+        req.flash('error_messages', data.message)
+        return res.redirect('back')
+      }
+      return res.redirect('/admin/categories')
+    })
   },
   deleteCategory: (req, res) => {
-    return Category.findByPk(req.params.id).then((category) => {
-      category.destroy().then((category) => {
-        res.redirect('/admin/categories')
-      })
+    categoryService.deleteCategory(req, res, (data) => {
+      if (data.status === 'success') {
+        return res.redirect('/admin/categories')
+      }
     })
   },
 }
