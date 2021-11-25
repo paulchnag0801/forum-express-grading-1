@@ -30,6 +30,21 @@ const categoryService = {
       console.log(erro)
     }
   },
+  putCategory: async (req, res, callback) => {
+    try {
+      if (!req.body.name) {
+        callback({ status: 'error', message: '未輸入分類名稱' })
+      } else {
+        await Category.update(
+          { name: req.body.name },
+          { where: { id: req.params.id } }
+        )
+        callback({ status: 'success', message: '' })
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  },
 }
 
 module.exports = categoryService
